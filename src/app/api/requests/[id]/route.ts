@@ -11,7 +11,7 @@ export async function GET(
   try {
     const authResult = await authenticate(req);
     if (!authResult.authenticated) {
-      return authResult.response;
+      return authResult.response || errorResponse('Unauthorized', 401);
     }
 
     await dbConnect();
@@ -43,7 +43,7 @@ export async function PUT(
   try {
     const authResult = await authenticate(req);
     if (!authResult.authenticated) {
-      return authResult.response;
+      return authResult.response || errorResponse('Unauthorized', 401);
     }
 
     await dbConnect();

@@ -15,7 +15,7 @@ export async function POST(
     const { id } = await params;
     const authResult = await authenticate(req);
     if (!authResult.authenticated) {
-      return authResult.response;
+      return authResult.response || errorResponse('Unauthorized', 401);
     }
 
     if (authResult.user?.role !== 'warehouse_staff' && authResult.user?.role !== 'admin') {

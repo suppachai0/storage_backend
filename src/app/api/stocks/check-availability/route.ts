@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   try {
     const authResult = await authenticate(req);
     if (!authResult.authenticated) {
-      return authResult.response;
+      return authResult.response || errorResponse('Unauthorized', 401);
     }
 
     await dbConnect();
