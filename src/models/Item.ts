@@ -13,7 +13,7 @@ const itemSchema = new mongoose.Schema(
     },
     unit: {
       type: String,
-      enum: ['piece', 'box', 'pack', 'kg', 'liter'],
+      enum: ['piece', 'box', 'pack', 'kg', 'liter', 'กิโลกรัม', 'แพ็ค', 'กล่อง', 'ชิ้น', 'ผืน', 'ขวด', 'หลอด', 'อัน', 'ห่อ', 'ม้วน', 'ก้อน', 'กระป๋อง'],
       default: 'piece',
     },
     description: String,
