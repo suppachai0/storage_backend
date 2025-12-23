@@ -4,6 +4,7 @@ import Category from '@/models/Category';
 import Item from '@/models/Item';
 import Warehouse from '@/models/Warehouse';
 import Stock from '@/models/Stock';
+import StockLog from '@/models/StockLog';
 import User from '@/models/User';
 import { successResponse, errorResponse } from '@/utils/responseHandler';
 
@@ -142,6 +143,37 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // 7. Create sample Stock Logs for history
+    const stockLogsCount = await StockLog.countDocuments();
+    let createdLogs = 0;
+    if (stockLogsCount === 0) {
+      const sampleLogs = [
+        { itemName: 'ข้าวสาร', changeType: 'in', quantity: 100, reason: 'รับบริจาคจากชุมชน' },
+        { itemName: 'น้ำดื่ม', changeType: 'in', quantity: 50, reason: 'จัดซื้อประจำเดือน' },
+        { itemName: 'ข้าวสาร', changeType: 'out', quantity: -20, reason: 'จ่ายให้ศูนย์พักพิง A' },
+        { itemName: 'ผ้าห่ม', changeType: 'in', quantity: 30, reason: 'รับบริจาค' },
+        { itemName: 'ยาพาราเซตามอล', changeType: 'out', quantity: -10, reason: 'จ่ายให้ศูนย์พักพิง B' },
+        { itemName: 'นมกล่อง', changeType: 'in', quantity: 100, reason: 'จัดซื้อเพิ่ม' },
+        { itemName: 'เสื้อผ้า', changeType: 'out', quantity: -25, reason: 'แจกจ่ายผู้ประสบภัย' },
+        { itemName: 'น้ำดื่ม', changeType: 'out', quantity: -15, reason: 'ส่งไปศูนย์พักพิง C' },
+      ];
+
+      for (const logData of sampleLogs) {
+        const item = createdItems.find(i => i.name === logData.itemName);
+        if (item) {
+          await StockLog.create({
+            itemId: item._id,
+            warehouseId: warehouse._id,
+            changeType: logData.changeType,
+            quantity: logData.quantity,
+            reason: logData.reason,
+            createdBy: adminUser._id,
+          });
+          createdLogs++;
+        }
+      }
+    }
+
     return successResponse({
       message: 'Seed data created successfully',
       data: {
@@ -149,6 +181,7 @@ export async function POST(req: NextRequest) {
         warehouse: warehouse.name,
         items: createdItems.length,
         stocks: createdStocks.length,
+        stockLogs: createdLogs,
         users: {
           admin: 'admin@sisaket.go.th / admin123',
           warehouse: 'warehouse@sisaket.go.th / warehouse123',
