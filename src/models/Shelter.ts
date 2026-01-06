@@ -38,8 +38,13 @@ const shelterSchema = new mongoose.Schema(
     },
     contactName: String,
     contactPhone: String,
+    phone: String,
     latitude: Number,
     longitude: Number,
+    location: {
+      lat: Number,
+      lng: Number,
+    },
   },
   { timestamps: true }
 );
